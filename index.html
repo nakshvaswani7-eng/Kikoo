@@ -3,10 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="manifest" href="manifest.json">
+    <title>Kikoo Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        #message { width: 80%; }
+        #send { width: 15%; }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>Current Date and Time (UTC): 2026-02-19 16:42:05</p>
+    <h1>Kikoo Chat Application</h1>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Type a message...">
+    <button id="send">Send</button>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        const password = '8822';
+
+        const messages = [];
+        const secretChatMessages = [];
+
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            if(message) {
+                messages.push(message);
+                chat.innerHTML += `<div>${message}</div>`;
+                messageInput.value = '';
+            }
+        });
+
+        // Secret chat functionality
+        function secretChat() {
+            const userPassword = prompt('Enter the password for secret chat:');
+            if(userPassword === password) {
+                const secretMessage = prompt('Type a secret message:');
+                secretChatMessages.push(secretMessage);
+                alert('Secret message sent!');
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        // Mini tap game
+        let score = 0;
+        let gameActive = false;
+
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            const gameInterval = setInterval(() => {
+                if(!gameActive) clearInterval(gameInterval);
+                const tapButton = document.createElement('button');
+                tapButton.innerText = 'Tap me!';
+                tapButton.style.position = 'absolute';
+                tapButton.style.top = Math.random() * 90 + 'vh';
+                tapButton.style.left = Math.random() * 90 + 'vw';
+                tapButton.onclick = () => {
+                    score++;
+                    alert('Score: ' + score);
+                    document.body.removeChild(tapButton);
+                };
+                document.body.appendChild(tapButton);
+            }, 1000);
+        }
+
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => { console.log('Service Worker registered'); })
+                .catch(err => { console.error('Service Worker registration failed', err); });
+        }
+    </script>
 </body>
 </html>
